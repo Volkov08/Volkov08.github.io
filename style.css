@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap');:root {
+  --pkgBG: #ddd;
+}
+.nav {
+  color: var(--t2);
+  background-color: var(--a);
+  height: 100vh;
+  width: 15vw;
+  top: 0px;
+  position: fixed;
+}
+body {
+  font-family: Quicksand, sans-serif;
+  margin: 150px;
+  font-size: 2.5vw;
+  background-color: var(--m);
+  color: var(--t);
+}
+@media screen and (min-width: 800px){
+  body {
+    font-size: 20px;
+    margin: 20vw;
+  }
+}
+.ssides {
+  margin: 15vw;
+}
+h1,main {
+  text-align: center;
+}
+.nav ul {
+  list-style-type: none;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  height: 60px;
+  padding: 10px;
+  transition: height 0.5s;
+  border-top: 2px solid var(--t2);
+}
+.nav ul li {
+  opacity: 0;
+  transition: opacity 0.5s;
+  margin-top: 15px;
+  padding: 0;
+}
+.nav ul:hover li {
+  display: block;
+  opacity: 1;
+  transition: opacity 0.5s
+}
+.nav ul:hover {
+  height: 50vh;
+  transition: height 0.5s;
+}
+.nav a {
+  color: inherit;
+  text-decoration: none;
+}
+a,a:link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--a);
+}
+.down {
+  color: var(--a);
+  text-decoration: none;
+}
+.nav a:link, a:visited {
+  color: inherit;
+  text-decoration: none;
+}
+.pkglist {
+  background-color: var(--pkgBG);
+  width: 18rem;
+  border-radius: 8px;
+  border-width: 0 0 0 5px;
+  border-color: var(--a);
+  border-style: solid;
+  font-size: 18px;
+  padding-left: 0;
+  padding:8px;
+  list-style-type: none;
+}
+.pkglist li {
+  padding:2px;
+}
+.stylepicker {
+  position: fixed;
+  color: var(--t2);
+  background-color: var(--a);
+  border-radius: 5px;
+  width:30px;
+  height:40px;
+  top: 0;
+  right: calc(15vw - 15px);
+  z-index: -1;
+  margin: 2px;
+  font-size: 36px;
+  transition: width 0.5s;
+}
+.stylepicker:hover{
+  width:280px;
+  transition: width 0.5s;
+}
+#stylepickerstatic {
+  width:240px;
+  height:40px;
+  top: 0;
+  right: 0;
+  position: absolute;
+  color: var(--t2);
+  background-color: var(--a);
+  border-bottom-left-radius: 5px;
+  font-size: 36px;
+}
+#stylepickerstatic div {
+  position: absolute;
+  float: left;
+}
+.spcontainer div{
+  width: 30px;
+  height: 30px;
+  border-radius: 18px;
+  position: absolute;
+  top: 2px;
+  border: 3px solid var(--t2);
+}
+.spcontainer div:nth-child(1){
+  left:25px;
+  background-color: var(--m);
+}
+.spcontainer div:nth-child(2){
+  left:65px;
+  background-color: var(--a);
+}
+.spcontainer div:nth-child(3){
+  left:105px;
+  background-color: var(--t);
+}
+.spcontainer div:nth-child(4){
+  left:145px;
+  background-color: var(--t2);
+}
+.spcontainer .clstyle{
+  border: none;
+  top: 9px;
+  left:195px;
+  font-size: 20px;
+}
+.spcontainer .morestyles {
+  left:230px;
+  text-align: center;
+  font-size: 10px;
+  line-height: 30px;
+}
+button {
+  background: var(--a);
+  border: 1px solid var(--t2);
+  border-radius: 5px;
+  padding: 4px;
+  color: var(--t2);
+}
+rect {
+  fill: var(--a);
+  stroke: var(--t2);
+}
+text {
+  fill: var(--t2);
+}
+input {
+  outline: none;
+  background: #fff;
+  border: 1px solid var(--t2);
+  color: #000;
+}
+#colorinp {
+  display: none;
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  height: 40vh;
+  background: rgba(0,0,0,0.3);
+  text-align: center;
+  padding: 30vh 0;
+}
+#back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  color: var(--t2);
+  background-color: var(--a);
+  text-align: center;
+  border-bottom-right-radius: 5px;
+  line-height: 40px;
+  font-size: 30px;
+  z-index: 10;
+}

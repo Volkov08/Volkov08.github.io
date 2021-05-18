@@ -1,0 +1,25 @@
+!poll question
+option
+option
+⋮
+option
+
+↳ creates a poll message
+
+!vt #
+
+↳ votes for the #th option of a poll *
+
+!rs
+
+↳ shows the results of a poll *
+
+!cl
+
+↳ clears poll and shows the results. must be sent by the poll creator *
+
+!info
+
+↳ sends message containing this list
+
+* must be a reply to the poll message created by the bot
