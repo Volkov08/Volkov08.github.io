@@ -67,62 +67,6 @@
     </ul>
     </div>
   </body>
-  <script>
-  let logo
-  var animate = false
-  var startcount = 0
-  var r = 0
-  var lastTyped = 0
-  var textTyped = ''
-  function preload() {
-    logo = loadModel('assets/logo.stl',true)
-  }
-
-  function setup() {
-    createCanvas(300, 200, WEBGL)
-  }
-
-  function keyTyped() {
-    if (Date.now() - lastTyped > 1000){
-      textTyped = ''
-    }
-    textTyped += key
-    lastTyped = Date.now()
-    if (textTyped == 'secret'){
-      rot()
-    }
-  }
-
-  function draw() {
-    clear()
-    renderLogo()
-  }
-
-  function rot() {
-    startcount = frameCount
-    animate = true
-    r = 0
-  }
-
-  function renderLogo(){
-    if (animate == true){
-      if(r < PI){
-        r = (frameCount - startcount)* 0.01
-      } else {
-        animate = false
-        window.location = "secret.html?c="+Date.now()
-      }
-    }
-    rotateX(r + PI)
-    rotateY(r)
-    scale(0.8)
-    if (stylet != undefined){
-     ambientLight(stylet.split('=')[1])
-    }
-    ambientMaterial(255);
-    noStroke()
-    model(logo)
-  }
-  </script>
+  <script>let logo;var animate=!1,startcount=0,r=0,lastTyped=0,textTyped="";function preload(){logo=loadModel("assets/logo.stl",!0)}function setup(){createCanvas(300,200,WEBGL)}function keyTyped(){Date.now()-lastTyped>1e3&&(textTyped=""),textTyped+=key,lastTyped=Date.now(),(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]==textTyped&&rot()}function draw(){clear(),renderLogo()}function rot(){startcount=frameCount,animate=!0,r=0}function renderLogo(){1==animate&&(r<PI?r=.01*(frameCount-startcount):(animate=!1,window.location="secret.html?c="+Date.now())),rotateX(r+PI),rotateY(r),scale(.8),null!=stylet&&ambientLight(stylet.split("=")[1]),ambientMaterial(255),noStroke(),model(logo)}  </script>
   <script src="common.js" type="text/javascript"></script>
 </html>
