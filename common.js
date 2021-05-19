@@ -66,17 +66,27 @@ async function setStyle(style){
 async function setSpecialStyle(id) {
   document.cookie = "specialStyle="+id+";path=/"
   specialStyle = id
-  location.reload()
+  if (id == 0) {
+    document.cookie = "specialStyle=0;path=/"
+    location.reload()
+    return
+  }
+  if (id == 2) {
+    rootStyle.setProperty("--a",`hsl(${Math.random()*360},100%,50%)`)
+  }
 }
 async function setTheme(id) {
-  if (id==0){
+  if (id == 0){
+    document.cookie = "style--m=;path=/"
+    document.cookie = "style--a=;path=/"
+    document.cookie = "style--t=;path=/"
+    document.cookie = "style--t2=;path=/"
     document.cookie = "specialStyle=0;path=/"
-    document.cookie = "style--m=; expires = Thu, 01 Jan 1970 00:00:00 GMT;path=/"
-    document.cookie = "style--a=; expires = Thu, 01 Jan 1970 00:00:00 GMT;path=/"
-    document.cookie = "style--t=; expires = Thu, 01 Jan 1970 00:00:00 GMT;path=/"
-    document.cookie = "style--t2=; expires = Thu, 01 Jan 1970 00:00:00 GMT;path=/"
-    location.reload();
+    location.reload()
+    return
   }
+  document.cookie = "specialStyle=0;path=/"
+  specialStyle = 0
   if (id == 1){
     setStyles(["#111","#07def2","#fff","#fff"])
   }
