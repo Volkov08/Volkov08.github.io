@@ -2,7 +2,7 @@
 <html lang='en' dir='ltr'>
   <head>
     <meta charset='utf-8'>
-    <title>gadgets&gtfractal-explorer</title>
+    <title>image tools & stuff&gtmandelbrot explorer</title>
     <style>
       :root {
         --a: #f90;
@@ -22,7 +22,8 @@
       <button onclick='changecanvas()' id='changeCanvas'>big canvas</button>
       <input onchange='document.getElementById("itlabel").innerHTML = Math.pow(document.getElementById("it").value,2); maxit = Math.pow(document.getElementById("it").value,2);' type='range' id='it' name='it' value='8' min='1' max='150'>
       <label for='it' id='itlabel'>64</label>
-      <input type='checkbox' checked="true" id='customit' onclick='customit = document.getElementById("customit").checked'>
+      <input type='checkbox' checked="true" id='customit' name="customit" onclick='customit = document.getElementById("customit").checked'>
+      <label for='customit'>manually set iterations of algorithm</label>
   </body>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -32,6 +33,7 @@
     var zoom = 1;
     var maxit = 70;
     var customit = false;
+    var customFractal = false;
     if(urlParams.get('xoff')!=null){
       xoff=parseFloat(urlParams.get('xoff'))
     }
@@ -90,11 +92,19 @@
       let zx = 0
       let zy = 0
       let j = 0
-      while(j < maxit && Math.sqrt(zx*zx+zy*zy) < 2.1){
-        let tempzx = zx*zx - zy*zy + x
-        zy = 2*zx*zy + y
-        zx = tempzx
-        j ++
+      if (!customFractal){
+        while(j < maxit && Math.sqrt(zx*zx+zy*zy) < 2){
+            let tempzx = zx*zx - zy*zy + x
+            zy = 2*zx*zy + y
+            zx = tempzx
+            j ++
+        }
+      } else {
+        while(j < maxit && Math.sqrt(zx*zx+zy*zy) < 2){
+          let ret = customFractalFunction(x,y,zx,zy)
+          zx = ret.x
+          zy = ret.y
+        }
       }
       return j
     }
