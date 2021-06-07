@@ -47,13 +47,14 @@
           canv.height = original.height
         }
         originalCtx.drawImage(original,0,0)
+                Bctx.scale(0.2,0.2)
+
         let originalDat = originalCtx.getImageData(0,0,originalCanv.width,originalCanv.height);
         let Rdat = Rctx.createImageData(originalDat)
         let Gdat = Rctx.createImageData(originalDat)
         let Bdat = Rctx.createImageData(originalDat)
         let RGBdat = Rctx.createImageData(originalDat)
 
-        console.log(originalDat,Rdat,Gdat,Bdat,RGBdat)
         for (let i = 0; i < originalDat.data.length; i += 4){
           Rdat.data[i] = originalDat.data[i]
           Gdat.data[i+1] = originalDat.data[i+1]
@@ -63,10 +64,12 @@
           Gdat.data[i+3] = 255
           Bdat.data[i+3] = 255
         }
-        console.log(originalDat,Rdat,Gdat,Bdat,RGBdat)
+
         Rctx.putImageData(Rdat,0,0)
         Gctx.putImageData(Gdat,0,0)
         Bctx.putImageData(Bdat,0,0)
+
+        Rctx.drawImage( Rcanv, 0, 0, 0.5*Rcanv.width, 0.5*Rcanv.height );
       }
     }
   </script>

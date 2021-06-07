@@ -156,7 +156,7 @@ a,a:link {
 }
 button {
   background: var(--a);
-  border: 1px solid var(--t2);
+  border: 2px solid var(--t2);
   border-radius: 5px;
   padding: 4px;
   color: var(--t2);
@@ -199,4 +199,9 @@ input {
   line-height: 40px;
   font-size: 30px;
   z-index: 10;
+}
+.group {
+  padding: 2px;
+  border: 2px solid var(--a);
+  border-radius: 5px;
 }

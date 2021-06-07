@@ -20,10 +20,19 @@
     <canvas style='border: 1px solid black;display:none' id='big' width='1000' height='600'>sorry, your browser doesn't support js canvas</canvas>
       <button onclick='draw()'>re-draw</button>
       <button onclick='changecanvas()' id='changeCanvas'>big canvas</button>
-      <input onchange='document.getElementById("itlabel").innerHTML = Math.pow(document.getElementById("it").value,2); maxit = Math.pow(document.getElementById("it").value,2);' type='range' id='it' name='it' value='8' min='1' max='150'>
-      <label for='it' id='itlabel'>64</label>
-      <input type='checkbox' checked="true" id='customit' name="customit" onclick='customit = document.getElementById("customit").checked'>
-      <label for='customit'>manually set iterations of algorithm</label>
+      <div class="group">
+        <input onchange='document.getElementById("itlabel").innerHTML = Math.pow(document.getElementById("it").value,2); maxit = Math.pow(document.getElementById("it").value,2);' type='range' id='it' name='it' value='8' min='1' max='150'>
+        <label for='it' id='itlabel'>64</label>
+        <input type='checkbox' checked="true" id='customit' name="customit" onclick='customit = document.getElementById("customit").checked'>
+        <label for='customit'>manually set iterations of algorithm</label>
+      </div>
+      keybinds<br>
+      <br>
+      click/Z   zoom in 1.5x<br>
+      B         zoom out 1.5x<br>
+      Z+Shift   zoom in 3x<br>
+      B+Shift   zoom out 3x<br>
+      R         redraw<br>
   </body>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
