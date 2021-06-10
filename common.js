@@ -43,9 +43,6 @@ window.setInterval(() => {
   if (specialStyle == 1){
     rootStyle.setProperty("--a",`hsl(${Date.now()/100%360},100%,50%)`)
   }
-  if (specialStyle == 3) {
-    rootStyle.setProperty("--bruh","url("+document.getElementById('bruh').value+")")
-  }
 },20)
 
 async function setStyle(style){

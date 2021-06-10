@@ -13,7 +13,7 @@ body {
   font-family: Quicksand, sans-serif;
   margin: 150px;
   font-size: 2.5vw;
-  background-image: var(--bruh);
+  background-color: var(--m);
   color: var(--t);
 }
 @media screen and (min-width: 800px){
