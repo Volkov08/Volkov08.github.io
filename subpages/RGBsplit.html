@@ -25,11 +25,6 @@
     <canvas id='RGBcanv'></canvas>
   </body>
   <script>
-
-  let Rscale = 95
-  let Gscale = 0.9
-  let Bscale = 0.1
-  //get contextes
     originalCtx = originalCanv.getContext('2d')
     Rctx = Rcanv.getContext('2d')
     Gctx = Gcanv.getContext('2d')
@@ -47,7 +42,6 @@
           canv.height = original.height
         }
         originalCtx.drawImage(original,0,0)
-                Bctx.scale(0.2,0.2)
 
         let originalDat = originalCtx.getImageData(0,0,originalCanv.width,originalCanv.height);
         let Rdat = Rctx.createImageData(originalDat)
@@ -68,8 +62,6 @@
         Rctx.putImageData(Rdat,0,0)
         Gctx.putImageData(Gdat,0,0)
         Bctx.putImageData(Bdat,0,0)
-
-        Rctx.drawImage( Rcanv, 0, 0, 0.5*Rcanv.width, 0.5*Rcanv.height );
       }
     }
   </script>
