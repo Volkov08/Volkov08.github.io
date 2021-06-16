@@ -17,25 +17,45 @@
   <body style="margin: 2rem">
     <div id="back" onclick="window.location='/'">❰❰</div>
     <input type="file" id = imgInpA>
+    <br>
+    <p id="imgDescA"></p>
+    <br>
     <image id="originalA">
+    <br>
+
     <input type="file" id = imgInpB>
+    <br>
+    <p id="imgDescB"></p>
+    <br>
     <image id="originalB">
+    <br>
+
+    <button id='subtract' onclick="subtract()">image size not equal</button>
+    <br>
+    <image id="outC">
+    <a id="outCdown" class="down" download="imgdiff" style="display:none">⤓</button>
+
     <canvas id='Acanv' style="display:none"></canvas>
     <canvas id='Bcanv' style="display:none"></canvas>
-    <canvas id='Ccanv'></canvas>
-    <button id='subtract' onclick="subtract()">image size not equal</button>
+    <canvas id='Ccanv' style="display:none"></canvas>
   </body>
   <script>
+    var imgw = 500;
     Actx = Acanv.getContext('2d')
     Bctx = Bcanv.getContext('2d')
     Cctx = Ccanv.getContext('2d')
 
     imgInpA.onchange = evt => {
+      imgw = window.innerWidth * .65
+
       const [file] = imgInpA.files
       if (file) {
         originalA.src = URL.createObjectURL(file)
       }
       originalA.onload = () => {
+        originalA.removeAttribute("width")
+        imgDescA.innerHTML = originalA.width + "x" + originalA.height + " px"
+
         Acanv.width = originalA.width
         Acanv.height = originalA.height
         Ccanv.width = originalA.width
@@ -46,14 +66,20 @@
         } else {
           document.getElementById('subtract').innerHTML="image size not equal"
         }
+        originalA.width = imgw;
       }
     }
     imgInpB.onchange = evt => {
+      imgw = window.innerWidth * .65
+      originalB.removeAttribute("width")
+
       const [file] = imgInpB.files
       if (file) {
         originalB.src = URL.createObjectURL(file)
       }
       originalB.onload = () => {
+        imgDescB.innerHTML = originalB.width + "x" + originalB.height + " px"
+
         Bcanv.width = originalB.width
         Bcanv.height = originalB.height
         Ccanv.width = originalB.width
@@ -64,9 +90,11 @@
         } else {
           document.getElementById('subtract').innerHTML="image size not equal"
         }
+        originalB.width = imgw;
       }
     }
     function subtract(){
+
       if (Acanv.width != Bcanv.width && Acanv.height != Bcanv.width) {
         return
       }
@@ -83,6 +111,10 @@
       }
 
       Cctx.putImageData(Cdat,0,0)
+      outC.src = Ccanv.toDataURL("image/png",1)
+      outCdown.href = outC.src
+      outCdown.style.display = 'block'
+      outC.width = imgw;
     }
   </script>
 </html>

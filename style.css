@@ -62,9 +62,24 @@ a,a:link {
   text-decoration: underline;
   text-decoration-color: var(--a);
 }
+@keyframes download {
+  0%    {top:0px;}
+  50%   {top:8px;}
+  100%  {top:0px;}
+}
 .down {
-  color: var(--a);
+  color: var(--t);
   text-decoration: none;
+  transition: color .5s;
+  font-size: 120%;
+}
+.down:hover {
+  color: var(--a);
+  transition: color .5s;
+  animation-name: download;
+  animation-duration: 1s;
+  position: relative;
+  animation-iteration-count: infinite;
 }
 .nav a:link, a:visited {
   color: inherit;
