@@ -14,7 +14,7 @@
     <link href="/style.css" rel="stylesheet">
     <script src="/common.js" type="text/javascript"></script>
   </head>
-  <body>
+  <body style="margin: 6rem">
     this will compute the best common resistor + capacitor combinations for any 555 astable circuit you want.
     it will automatically fill in all remaining values as soon as you fill in enough of the below.
     scroll down see all possible combinations
@@ -40,7 +40,7 @@
     </select>
 
     <br>
-    <input type="number" ud="periodInp" placeholder="period">
+    <input type="number" id="periodInp" placeholder="period">
     <input type="number" id="TonInp" placeholder="Ton">
     <input type="number" id="ToffInp" placeholder="Toff">
 
@@ -59,29 +59,46 @@
   </body>
   <script type="text/javascript">
     //frac,mHz,ms,ms,ms
-    let duty, period, Ton, Toff;
+    let period = 0
+    let Ton, Toff;
+    let flipped = false
 
     function update(){
       let freqMult = parseInt(unitsF.value)
       let dutyMult = parseInt(unitsP.value)
       let timeMult = parseInt(unitsT.value)
-      if (freqInp.value != ""){
-        period = 1000000/(parseInt(freqInp.value)*freqMult)
-      }
-      if (periodInp.value != ""){
+      let duty = 0
+      period = 0
+      if (periodInp.value){
         period = parseInt(periodInp.value)*timeMult
+      } else if (freqInp.value) {
+        period = 1000000/(parseInt(freqInp.value)*freqMult)
+      } else if (TonInp.value && dutyInp.value){
+
+      } else if (ToffInp.value && dutyInp.value){
+        per
+      } else if (TonInp.value && ToffInp.value){
+        period = parseInt(TonInp.value)+parseInt(ToffInp.value)
       }
-      if (dutyInp.value != ""){
-        Ton  = period*dutyInp.value/parseInt(unitsP.value)
-        Toff = period*(1-dutyInp.value/parseInt(unitsP.value))
+      if (dutyInp.value && period){
+        Ton  = period*parseInt(dutyInp.value)/parseInt(unitsP.value)
+        Toff = period*(1-parseInt(dutyInp.value)/parseInt(unitsP.value))
       }
-      if (TonInp.value != ""){
-        Ton  = TonInp.value/parseInt(unitsT.value)
+      if (TonInp.value){
+        Ton  = parseInt(TonInp.value)/parseInt(unitsT.value)
       }
-      if (ToffInp.value != ""){
-        Toff  = ToffInp.value/parseInt(unitsT.value)
+      if (ToffInp.value){
+        Toff = parseInt(ToffInp.value)/parseInt(unitsT.value)
       }
-      console.log(duty,Ton,Toff,period,freqMult,dutyMult,timeMult)
+      if (duty>0.5){
+        let temp = Ton
+        Ton = Toff
+        Toff = temp
+        flipped = true
+      } else {
+        flipped = false
+      }
+      console.log(duty,Ton,Toff,period,freqMult,dutyMult,timeMult,flipped)
     }
   </script>
 </html>
