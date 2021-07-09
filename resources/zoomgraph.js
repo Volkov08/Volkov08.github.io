@@ -2,7 +2,7 @@ if (process.argv[2] == "-h"){
   help()
 }
 function help(){
-  console.log("\nusage:\nnode zoomgraph.js [image file]\n-w  draws white last, usually recommended\n-v  displays debug info\n-s #  defines the line width as #, 2 is default (zoom line widths: 1, 2, 4, 6)\n-d #  sets the delay after releasing/pressing the mouse as #, default is 5 (use when lines are not drawn or at the wrong place)\n-h  show this dialog\n\nexample: node rick.js bob.png -w -s 1\n\nafter the program starts it will prompt you to first put your mouse on the button that will change the color, put it as close to the centre as you can. then put your mouse where you want the top left corner to be. as a failsafe you can quickly swipe your mouse to the right to abort\n")
+  console.log("\nusage:\nnode zoomgraph.js [image file]\n-w  draws white last, usually recommended\n-v  displays debug info\n-s #  defines the line width as #, 2 is default (zoom line widths: 1, 2, 4, 6)\n-d #  sets the delay after releasing/pressing the mouse as #ms, default is 5ms (increase when lines are not drawn or at the wrong place)\n-h  show this dialog\n\nexample: node rick.js bob.png -w -s 1\n\nafter the program starts it will prompt you to first put your mouse on the button that will change the color, put it as close to the centre as you can. then put your mouse where you want the top left corner to be. as a failsafe you can quickly swipe your mouse to the right to abort\n")
   process.exit(0)
 }
 var r,Image;
