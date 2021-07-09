@@ -93,6 +93,9 @@ async function setTheme(id) {
   if (id == 2){
     setStyles(["#111","#f2b807","#fff","#fff"])
   }
+  if (id == 3){
+    setStyles(["#f0f0e6","#e82323","#000","#ccc"])
+  }
 }
 function setStyles(arrc){
   document.cookie = "style--m=" +arrc[0]+";path=/"
