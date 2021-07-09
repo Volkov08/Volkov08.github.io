@@ -75,6 +75,12 @@
         Ton  = period*dutyInp.value/parseInt(unitsP.value)
         Toff = period*(1-dutyInp.value/parseInt(unitsP.value))
       }
+      if (TonInp.value != ""){
+        Ton  = TonInp.value/parseInt(unitsT.value)
+      }
+      if (ToffInp.value != ""){
+        Toff  = ToffInp.value/parseInt(unitsT.value)
+      }
       console.log(duty,Ton,Toff,period,freqMult,dutyMult,timeMult)
     }
   </script>
