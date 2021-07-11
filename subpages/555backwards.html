@@ -16,7 +16,7 @@
   </head>
   <body style="margin: 6rem">
     this will compute the best common resistor + capacitor combinations for any 555 astable circuit you want.
-    it will automatically fill in all remaining values as soon as you fill in enough of the below.
+    it will automatically fill in the values it needs as soon as you fill in enough of the below.
     scroll down see all possible combinations
     <br>
     <br>
@@ -50,55 +50,147 @@
       <option value="1000000">s</option>
       <option value="60000000">m</option>
     </select>
-
+    <div id ="flipout" class="notice" style="display:none">you need to invert the output since the dutycycle can only go as low as 50%</div>
+    <p id="result" class="results"></p>
+    <button id="calcButton" style="display:none" onclick="calc()">calculate R1, R2, C1</button>
+    <p id="finalResult" class="results"></p>
     <ul class="pkglist">
     <li>freqency|period + Ton|Toff|duty </li>
     <li>Ton + Toff</li>
     <li>Toff|Ton + duty</li>
+    <br>
+    <li>if multiple values are defined they will be chosen in this order from top to bottom:</li>
+    <br>
+    <li>period</li>
+    <li>freqency</li>
+    <li>Ton</li>
+    <li>Toff</li>
+    <li>duty</li>
     </ul>
   </body>
   <script type="text/javascript">
+    //resistor values
+    const Rvals = [100,110,180,200,220,300,330,470,510,680,1000,2000,2200,3000,3300,4700,5100,6800,7500,10000,20000,47000,51000,68000,75000,10000,220000,330000,470000,510000,680000,1000000]
+    //capacitor values
+    const Cvals = [10,22,33,47,100,200,220,330,470,1000,10000,20000,22000,47000,100000,220000,470000]
     //frac,mHz,ms,ms,ms
-    let period = 0
     let Ton, Toff;
     let flipped = false
 
-    function update(){
-      let freqMult = parseInt(unitsF.value)
-      let dutyMult = parseInt(unitsP.value)
-      let timeMult = parseInt(unitsT.value)
-      let duty = 0
-      period = 0
-      if (periodInp.value){
-        period = parseInt(periodInp.value)*timeMult
-      } else if (freqInp.value) {
-        period = 1000000/(parseInt(freqInp.value)*freqMult)
-      } else if (TonInp.value && dutyInp.value){
+    Array.from(document.getElementsByTagName("input")).forEach(x => x.onchange = update)
+    Array.from(document.getElementsByTagName("select")).forEach(x => x.onchange = update)
 
+    function update(){
+      let freqMult = parseFloat(unitsF.value)
+      let dutyMult = parseFloat(unitsP.value)
+      let timeMult = parseFloat(unitsT.value)
+      let duty = 0
+      let period = 0
+      if (periodInp.value == "0"){
+        periodInp.value = ""
+      }
+      if (freqInp.value == "0"){
+        freqInp.value = ""
+      }
+      if ((periodInp.value||freqInp.value||dutyInp.value)&&TonInp.value&&ToffInp.value){
+        ToffInp.value = ""
+      }
+      if (periodInp.value){
+        period = parseFloat(periodInp.value)*timeMult
+      } else if (freqInp.value) {
+        period = 1000000000/(parseFloat(freqInp.value)*freqMult)
+      } else if (TonInp.value && dutyInp.value){
+        period = parseFloat(TonInp.value)*timeMult/(parseFloat(dutyInp.value)/parseFloat(unitsP.value))
       } else if (ToffInp.value && dutyInp.value){
-        per
+        period = parseFloat(ToffInp.value)*timeMult/(1-parseFloat(dutyInp.value)/parseFloat(unitsP.value))
       } else if (TonInp.value && ToffInp.value){
-        period = parseInt(TonInp.value)+parseInt(ToffInp.value)
+        period = (parseFloat(TonInp.value)+parseFloat(ToffInp.value))*timeMult
       }
-      if (dutyInp.value && period){
-        Ton  = period*parseInt(dutyInp.value)/parseInt(unitsP.value)
-        Toff = period*(1-parseInt(dutyInp.value)/parseInt(unitsP.value))
-      }
+
       if (TonInp.value){
-        Ton  = parseInt(TonInp.value)/parseInt(unitsT.value)
+        Ton  = parseFloat(TonInp.value)*timeMult
+      } else if (period && ToffInp.value) {
+        Ton = period - (parseFloat(ToffInp.value)*timeMult)
+      } else if (dutyInp.value && period){
+        Ton = period*parseFloat(dutyInp.value)/parseFloat(unitsP.value)
       }
+
       if (ToffInp.value){
-        Toff = parseInt(ToffInp.value)/parseInt(unitsT.value)
+        Toff = parseFloat(ToffInp.value)*timeMult
+      } else if (period && TonInp.value) {
+        Toff = period - (parseFloat(TonInp.value)*timeMult)
+      } else if (dutyInp.value && period){
+        Toff = period*(1-parseFloat(dutyInp.value)/parseFloat(unitsP.value))
       }
-      if (duty>0.5){
+
+      if (Ton<Toff){
         let temp = Ton
         Ton = Toff
         Toff = temp
-        flipped = true
+        flipout.style.display="block"
       } else {
-        flipped = false
+        flipout.style.display="none"
       }
-      console.log(duty,Ton,Toff,period,freqMult,dutyMult,timeMult,flipped)
+      if (Ton!=undefined&&Toff!=undefined){
+        document.getElementById("result").innerHTML = "calculated Ton: " + format(Ton,0) + ", Toff: " + format(Toff,0);
+        document.getElementById("calcButton").style.display="block"
+      } else {
+        document.getElementById("calcButton").style.display="none"
+      }
+      console.log(Ton,Toff)
+    }
+    async function calc(){
+    let closest = [0,0,0]
+    let ret = c555(Rvals[0],Rvals[0],Cvals[0])
+    let closestd = (ret[0] - Ton)**2 + (ret[1] - Toff)**2
+    for (let i = 0; i < Rvals.length; i++) {
+      for (let j = 0; j < Rvals.length; j++) {
+        for (let k = 0; k < Cvals.length; k++) {
+          ret = c555(Rvals[i],Rvals[j],Cvals[k])
+          if ((ret[0] - Ton)**2 + (ret[1] - Toff)**2 < closestd){
+            closestd = (ret[0] - Ton)**2 + (ret[1] - Toff)**2
+            closest[0] = Rvals[i]
+            closest[1] = Rvals[j]
+            closest[2] = Cvals[k]
+          }
+        }
+      }
+    }
+    ret = c555(closest[0],closest[1],closest[2])
+    console.log(format(closest[0],1),format(closest[1],1),format(closest[2],2),closestd,c555(closest[0],closest[1],closest[2]))
+    document.getElementById("finalResult").innerHTML = "R1 = "+format(closest[0],1)+"<br>R2 = "+format(closest[1],1)+"<br>C1 = "+format(closest[2],2) + "<br><br>actual Ton: " + format(ret[0],0) + ", Toff: " + format(ret[1],0) + "<br>mean error: " + ((Math.abs(ret[0]-Ton)/Ton+Math.abs(ret[1]-Toff)/Toff)*50).toFixed(1) + "%";
+    }
+    function c555(R1,R2,C) {
+       return([0.693 * (R1+R2) * C / 1000,0.693 * (R2) * C / 1000])
+    }
+    function format(x,type){
+      if (type == 0){
+        if (x < 1000){
+          return (x.toFixed(1)+"µs")
+        } else if (x < 1000000){
+          return ((x/1000).toFixed(1)+"ms")
+        } else if (x < 60000000){
+          return ((x/1000000).toFixed(1)+"s")
+        } else {
+          return ((x/60000000).toFixed(1)+"m")
+        }
+      } else if (type == 1) {
+        if (x < 1000){
+          return (x.toFixed(1)+"Ω")
+        } else if (x < 1000000){
+          return ((x/1000).toFixed(1)+"kΩ")
+        } else {
+          return ((x/1000000).toFixed(1)+"MΩ")
+        }
+      } else if (type == 2) {
+        if (x < 1000){
+          return (x.toFixed(1)+"nF")
+        } else if (x < 1000000){
+          return ((x/1000).toFixed(1)+"µF")
+        } else {
+          return ((x/1000000).toFixed(1)+"mF")
+        }
+      }
     }
   </script>
 </html>
