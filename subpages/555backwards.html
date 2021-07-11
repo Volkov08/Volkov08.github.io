@@ -21,7 +21,8 @@
     scroll down see all possible combinations
     <br>
     <br>
-
+    <img src="/resources/555.png" style="background-color: #fff">
+    <br>
     <input type="number" id="freqInp" placeholder="freqency">
 
     <select id="unitsF">
@@ -53,7 +54,7 @@
     </select>
     <div id ="flipout" class="notice" style="display:none">you need to invert the output since the dutycycle can only go as low as 50%</div>
     <p id="result" class="results"></p>
-    <button id="calcButton" style="display:none" onclick="calc()">calculate R1, R2, C1</button>
+    <button id="calcButton" style="display:none" onclick="calc()">calculate R1, R2, C</button>
     <p id="finalResult" class="results"></p>
     <ul class="pkglist">
     <li>freqency|period + Ton|Toff|duty </li>
@@ -159,7 +160,7 @@
     }
     ret = c555(closest[0],closest[1],closest[2])
     console.log(format(closest[0],1),format(closest[1],1),format(closest[2],2),closestd,c555(closest[0],closest[1],closest[2]))
-    document.getElementById("finalResult").innerHTML = "R1 = "+format(closest[0],1)+"<br>R2 = "+format(closest[1],1)+"<br>C1 = "+format(closest[2],2) + "<br><br>actual Ton: " + format(ret[0],0) + ", Toff: " + format(ret[1],0) + "<br>mean error: " + ((Math.abs(ret[0]-Ton)/Ton+Math.abs(ret[1]-Toff)/Toff)*50).toFixed(1) + "%";
+    document.getElementById("finalResult").innerHTML = "R1 = "+format(closest[0],1)+"<br>R2 = "+format(closest[1],1)+"<br>C = "+format(closest[2],2) + "<br><br>actual Ton: " + format(ret[0],0) + ", Toff: " + format(ret[1],0) + "<br>mean error: " + ((Math.abs(ret[0]-Ton)/Ton+Math.abs(ret[1]-Toff)/Toff)*50).toFixed(1) + "%";
     }
     function c555(R1,R2,C) {
        return([0.693 * (R1+R2) * C / 1000,0.693 * (R2) * C / 1000])
