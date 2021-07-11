@@ -139,7 +139,7 @@
       } else {
         document.getElementById("calcButton").style.display="none"
       }
-      console.log(Ton,Toff)
+      //console.log(Ton,Toff)
     }
     async function calc(){
     let closest = [0,0,0]
@@ -159,7 +159,7 @@
       }
     }
     ret = c555(closest[0],closest[1],closest[2])
-    console.log(format(closest[0],1),format(closest[1],1),format(closest[2],2),closestd,c555(closest[0],closest[1],closest[2]))
+    //console.log(format(closest[0],1),format(closest[1],1),format(closest[2],2),closestd,c555(closest[0],closest[1],closest[2]))
     document.getElementById("finalResult").innerHTML = "R1 = "+format(closest[0],1)+"<br>R2 = "+format(closest[1],1)+"<br>C = "+format(closest[2],2) + "<br><br>actual Ton: " + format(ret[0],0) + ", Toff: " + format(ret[1],0) + "<br>mean error: " + ((Math.abs(ret[0]-Ton)/Ton+Math.abs(ret[1]-Toff)/Toff)*50).toFixed(2) + "%";
     }
     function c555(R1,R2,C) {
