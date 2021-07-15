@@ -87,7 +87,7 @@ a,a:link {
 }
 .pkglist {
   background-color: var(--pkgBG);
-  width: 18rem;
+  width: 18em;
   border-radius: 8px;
   border-width: 0 0 0 5px;
   border-color: var(--a);
@@ -222,7 +222,7 @@ input {
 }
 .notice {
   font-size: 80%;
-  margin-top: 0.5rem;
+  margin-top: 0.5em;
   background-color: var(--pkgBG);
   border-radius: 4px;
   border-width: 0 0 3px 0;
@@ -233,4 +233,19 @@ input {
 }
 .results {
   font-size: 80%;
+}
+.dctagc {
+  bottom: 0;
+  left: 0;
+  padding: 5px;
+  font-size: 0.8rem;
+  position: absolute;
+  color: var(--t2);
+}
+#dctag {
+  bottom: 0;
+  left: 4em;
+  font-size: 0.8rem;
+  background: none;
+  border: none;
 }

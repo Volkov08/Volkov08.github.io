@@ -107,3 +107,9 @@ function setStyles(arrc){
   rootStyle.setProperty("--t" ,arrc[2])
   rootStyle.setProperty("--t2",arrc[3])
 }
+function copyTag() {
+  let el = document.getElementById("dctag")
+  el.select();
+  el.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+}
