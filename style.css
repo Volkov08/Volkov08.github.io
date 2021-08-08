@@ -242,10 +242,3 @@ input {
   position: absolute;
   color: var(--t2);
 }
-#dctag {
-  bottom: 0;
-  left: 4em;
-  font-size: 0.8rem;
-  background: none;
-  border: none;
-}

@@ -107,9 +107,11 @@ function setStyles(arrc){
   rootStyle.setProperty("--t" ,arrc[2])
   rootStyle.setProperty("--t2",arrc[3])
 }
-function copyTag() {
-  let el = document.getElementById("dctag")
-  el.select();
-  el.setSelectionRange(0, 99999);
+function copyText(text){
+  var aux = document.createElement("input");
+  aux.setAttribute("value", text);
+  document.body.appendChild(aux);
+  aux.select();
   document.execCommand("copy");
+  document.body.removeChild(aux);
 }

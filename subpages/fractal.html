@@ -20,9 +20,10 @@
     <canvas style='border: 1px solid black;display:none' id='big' width='1000' height='600'>sorry, your browser doesn't support js canvas</canvas>
       <button onclick='draw()'>re-draw</button>
       <button onclick='changecanvas()' id='changeCanvas'>big canvas</button>
+      <button onclick='copyText(window.location.origin+"/subpages/fractal.html?xoff="+xoff+"&yoff="+yoff+"&zoom="+zoom+(document.getElementById("customit").checked?"&maxit="+maxit:""+document.getElementById("big").style.display == "none"?"":"&canv=big"))'>copy share link</button>
       <div class="group">
-        <input onchange='document.getElementById("itlabel").innerHTML = Math.pow(document.getElementById("it").value,2); maxit = Math.pow(document.getElementById("it").value,2);' type='range' id='it' name='it' value='8' min='1' max='150'>
-        <label for='it' id='itlabel'>64</label>
+        <input onchange='document.getElementById("itlabel").innerHTML = Math.pow(document.getElementById("itsl").value,2); maxit = Math.pow(document.getElementById("itsl").value,2);' type='range' id='itsl' name='itsl' value='8' min='1' max='150'>
+        <label for='itsl' id='itlabel'>64</label>
         <input type='checkbox' checked="true" id='customit' name="customit" onclick='customit = document.getElementById("customit").checked'>
         <label for='customit'>manually set iterations of algorithm</label>
       </div>
@@ -40,9 +41,9 @@
     var xoff = 0;
     var yoff = 0;
     var zoom = 1;
-    var maxit = 70;
+    var maxit = 64;
     var customit = false;
-    var customFractal = false;
+    var customFractal = true;
     if(urlParams.get('xoff')!=null){
       xoff=parseFloat(urlParams.get('xoff'))
     }
@@ -57,12 +58,15 @@
       customit=true
       document.getElementById('customit').checked = true
       document.getElementById('itlabel').innerHTML = urlParams.get('maxit')
-      document.getElementById('it').value = Math.sqrt(parseInt(urlParams.get('maxit')))
+      document.getElementById('itsl').value = Math.sqrt(parseInt(urlParams.get('maxit')))
     } else {
       document.getElementById('customit').checked = false
     }
     if (urlParams.get('canv') == 'big'){
-      changecanvas()
+      canvas = document.getElementById('big')
+      document.getElementById('main').style.display = 'none'
+      canvas.style.display = 'block'
+      document.getElementById('changeCanvas').innerHTML = 'normal canvas'
     }
     canvas.style.display = 'block'
     var ctx = canvas.getContext('2d');
@@ -73,47 +77,72 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       draw()
     }
-    function draw() {
+    async function draw() {
       if (!customit){
-       maxit = Math.max(Math.floor(Math.log(zoom+1) * 80),50)
+       maxit = Math.max(Math.floor(Math.log(zoom+1) * 93),50)
       }
-      for (let i = 0; i < pixels.length; i += 4) {
-        let x = i/4%canvas.width
-        let y = Math.floor(i/4/canvas.width)
-        let it = mdb((xoff+(x-canvas.width/2)/zoom)/canvas.height/0.4,(yoff+(y-canvas.height/2)/zoom)/canvas.height/0.4);
-        if (it == maxit){
-         pixels[i]     = 0
-         pixels[i + 1] = 50;
-         pixels[i + 2] = 70;
-        } else {
-          //pixels[i + 0] = Math.sqrt(it)*255/Math.sqrt(maxit) + 50;
-          //pixels[i + 1] = it*255/maxit * 3 + 70;
-          pixels[i] = 0;
-          pixels[i + 1]     = it*105/maxit * 3 -50;
-          pixels[i + 2] = 255 - it*205/maxit * 3;
+      for (let h = 0; h < 64; h += 4){
+        for (let i = h; i < pixels.length; i += 64) {
+          let x = i/4%canvas.width
+          let y = Math.floor(i/4/canvas.width)
+          let it;
+          if (customFractal == 0){
+            it = mdb((xoff+(x-canvas.width/2)/zoom)/canvas.height/0.4,(yoff+(y-canvas.height/2)/zoom)/canvas.height/0.4);
+          } else if (customFractal == 1) {
+            it = ship((xoff+(x-canvas.width/2)/zoom)/canvas.height/0.4,(yoff+(y-canvas.height/2)/zoom)/canvas.height/0.4)
+          } else if (customFractal == 2) {
+            it = julia((xoff+(x-canvas.width/2)/zoom)/canvas.height/0.4,(yoff+(y-canvas.height/2)/zoom)/canvas.height/0.4)
+          } else if (customFractal == 3) {
+            it = custom((xoff+(x-canvas.width/2)/zoom)/canvas.height/0.4,(yoff+(y-canvas.height/2)/zoom)/canvas.height/0.4)
+          }
+          if (it == maxit){
+           pixels[i]     = 0
+           pixels[i + 1] = 50;
+           pixels[i + 2] = 70;
+          } else {
+            pixels[i] = it*105/maxit * 3 -50;
+            pixels[i + 1] = (it/maxit)**2 * 255;
+            pixels[i + 2] = 255 - it*205/maxit * 3;
+          }
+          pixels[i + 3] = 255;
         }
-        pixels[i + 3] = 255;
-        //pixels[i + 2] = x/canvas.width * 256;
+        ctx.putImageData(imgd,0,0)
+        await sleep(0)
       }
-      ctx.putImageData(imgd,0,0)
     }
     function mdb(x,y){
       let zx = 0
       let zy = 0
       let j = 0
-      if (!customFractal){
-        while(j < maxit && Math.sqrt(zx*zx+zy*zy) < 2){
+      while(j < maxit && Math.sqrt(zx*zx+zy*zy) < 2){
             let tempzx = zx*zx - zy*zy + x
             zy = 2*zx*zy + y
             zx = tempzx
             j ++
-        }
-      } else {
-        while(j < maxit && Math.sqrt(zx*zx+zy*zy) < 2){
-          let ret = customFractalFunction(x,y,zx,zy)
-          zx = ret.x
-          zy = ret.y
-        }
+      }
+      return j
+    }
+    function julia(x,y){
+      let zx = x
+      let zy = y
+      let j = 0
+      while(j < maxit && Math.sqrt(zx*zx+zy*zy) < 2){
+            let tempzx = zx*zx - zy*zy + 0.1
+            zy = 2*zx*zy + 0.62
+            zx = tempzx
+            j ++
+      }
+      return j
+    }
+    function ship(x,y){
+      let zx = x
+      let zy = y
+      let j = 0
+      while(j < maxit && Math.sqrt(zx*zx+zy*zy) < 2){
+            let tempzx = Math.abs(zx*zx) - Math.abs(zy*zy) + x
+            zy = 2*Math.abs(zx*zy) + y
+            zx = tempzx
+            j ++
       }
       return j
     }
@@ -172,5 +201,9 @@
       pixels = imgd.data;
       draw()
     }
+    function custom(x,y){
+      return 0;
+    }
+    sleep = (ms) => {return new Promise(resolve => window.setTimeout(resolve, ms));}
   </script>
 </html>

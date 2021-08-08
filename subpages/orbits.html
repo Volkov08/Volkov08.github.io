@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>orbits</title>
+    <style>
+      :root {
+        --a: #f90;
+        --m: #fff;
+        --t: #000;
+        --t2: #fff;
+      }
+    </style>
+    <link href="/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <canvas id="main" width="3200" height="3200">your browser is too lame for canvas</canvas>
+  </body>
+  <script type="text/javascript">
+
+  var canvas = document.getElementById('main');
+  var ctx = canvas.getContext('2d');
+
+  class body {
+    constructor(x,y,col,mass,sx=0,sy=0,r=10) {
+        this.x = x
+        this.y = y
+        this.col = col
+        this.r = r
+        this.mass = mass
+        this.sx = sx
+        this.sy = sy
+      }
+      draw(){
+        ctx.beginPath()
+        ctx.fillStyle = this.col
+        ctx.arc(this.x - camx, this.y - camy, this.r, 0, Math.PI*2)
+        ctx.fill()
+        //console.log(this.sx, this.sy)
+      }
+      update(){
+        let f;
+        let rawd;
+        objects.forEach((e,i)=>{
+          if (e == this){return}
+          rawd = (this.x-e.x)**2 + (this.y - e.y)**2
+          if (rawd < (this.r+e.r)**2){
+            this.col = blendColors(this.col, e.col,0.5)
+            this.sx = this.sx/e.mass+e.sx/this.mass
+            this.sy += this.sy/e.mass+e.sy/this.mass
+            this.mass += e.mass
+            this.r += e.r
+            objects.splice(i,1)
+          } else {
+            f = this.mass*e.mass*(G/rawd/Math.sqrt(rawd)/steps)
+            this.sx += (e.x-this.x)*f/this.mass
+            this.sy += (e.y-this.y)*f/this.mass
+          }
+        })
+        this.x += this.sx/steps
+        this.y += this.sy/steps
+      }
+    }
+
+    var G = 4
+    var objects = []
+
+    var camx = - canvas.width/2
+    var camy = - canvas.height/2
+    var focus = 5
+    var running = 1
+    const steps = 500
+    objects.push(new body(0,0,'#ff0',1000,0,0,8))
+    objects.push(new body(0,200,'#09f',8 ,4.5,0,3))
+    objects.push(new body(0,210,'#999',1 ,6.5,0,2))
+    objects.push(new body(0,60,'#f90',4  ,8,0,3))
+    objects.push(new body(0,450,'#3d3',20,3.5,0,5))
+    objects.push(new body(0,490,'#fff',1 ,5,0,2))
+
+    window.setInterval(draw,20)
+    function draw() {
+      if (running){
+        for (let i = 0; i < steps; i ++){
+          update()
+        }
+      }
+      if (focus>=0){
+        camx = objects[focus].x - canvas.width/2
+        camy = objects[focus].y - canvas.height/2
+      }
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      objects.forEach((e) => {
+        if ((e.x+e.r) - camx > 0 && (e.x-e.r) - camx < canvas.width && (e.y+e.r) - camy > 0 && (e.y-e.r) - camy < canvas.height) {
+          e.draw()
+        }
+      })
+    }
+    function update() {
+      objects.forEach((e)=>{e.update()})
+    }
+
+    function blendColors(colorA, colorB, amount) {
+      const [rA, gA, bA] = colorA.match(/\w/g).map((c) => parseInt(c, 16));
+      const [rB, gB, bB] = colorB.match(/\w/g).map((c) => parseInt(c, 16));
+      const r = Math.round(rA + (rB - rA) * amount).toString(16);
+      const g = Math.round(gA + (gB - gA) * amount).toString(16);
+      const b = Math.round(bA + (bB - bA) * amount).toString(16);
+      return '#' + r + g + b;
+    }
+
+  </script>
+  <script src="/common.js" type="text/javascript"></script>
+</html>

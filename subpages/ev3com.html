@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>ev3com</title>
+    <style>
+      :root {
+        --a: #f90;
+        --m: #fff;
+        --t: #000;
+        --t2: #fff;
+      }
+      #comdiv {
+        width:50vh;
+        height: 50vh;
+        background-color: #000;
+        border: 2px solid var(--a);
+        position: absolute;
+        top: 25vh;
+        right: calc(50vw - 25vh)
+      }
+      body {
+        text-align: center;
+      }
+    </style>
+    <link href="/style.css" rel="stylesheet">
+  </head>
+  <body style="margin: 6rem">
+    <div id="back" onclick="window.location='/'">❰❰</div>
+    <div id="comdiv">
+
+    </div>
+    press the "up" button on the ev3, when it blinks red click on
+    <button onclick="calibrate()">calibrate</button>
+    <br>
+    <button onclick="send(parseInt(document.getElementById('inp').value))">send</button><input type="number" id="inp" value="1">
+  </body>
+  <script src="/common.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var t = 500;
+    async function calibrate(){
+      comdiv.style.backgroundColor = "#fff"
+      await sleep(1000)
+      comdiv.style.backgroundColor = "#888"
+      await sleep(1000)
+      comdiv.style.backgroundColor = "#000"
+    }
+    async function send(num){
+      comdiv.style.backgroundColor = "#fff"
+      await sleep(t)
+      let binary = num.toString(2);
+      for (let i = 0; i < 6 - num.toString(2).length; i ++){
+        binary = "0" + binary;
+      }
+      console.log(binary)
+      let color = 2;
+      let colors = ["#000","#787878","#fff"]
+      for (let i = 0; i < 6; i ++){
+        color = (color + 1 + parseInt(binary[i]))%3
+        console.log(color)
+        comdiv.style.backgroundColor = colors[color];
+        await sleep(t)
+      }
+      comdiv.style.backgroundColor = "#000"
+    }
+    sleep = (ms) => {return new Promise(resolve => window.setTimeout(resolve, ms));}
+  </script>
+</html>

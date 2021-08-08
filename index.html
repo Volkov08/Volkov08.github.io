@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
     <meta charset="utf-8">
-    <meta property="og:title" content="LinkFork | Link Preview Customization">
     <style>
       :root {
         --a: #f92;
@@ -21,7 +19,6 @@
     <button>SET</button>
     <button onclick="document.getElementById('colorinp').style.display = 'none'">ESC</button>
     </div>
-    <main style="display:none"></main>
     <h1>This is my website</h1>
     where you can find programs i made, games, calculators and 3d models
     <div class="stylepicker">
@@ -60,7 +57,7 @@
           <a href="subpages/555backwards.html">reverse 555 calc</a>
         </li>
       </ul>
-      <dc onclick="copyTag()" class="dctagc">discord: <input type="text" value="feedme#0198" id="dctag" class="dctagc"></input></dc>
+      <dc onclick="copyText('feedme#0198')" class="dctagc">discord: feedme#0198</dc>
     </div>
     <div class="nav" style="right:0px">
     <ul>
@@ -71,10 +68,9 @@
       <p>image tools & stuff</p>
       <li><a href="subpages/RGBsplit.html">RGB splitter</a></li>
       <li><a href="subpages/Difference.html">image difference</a></li>
-      <li><a href="subpages/fractal.html">mandelbrot explorer</a></li>
+      <li><a href="subpages/fractal.html">fractal explorer</a></li>
     </ul>
     </div>
   </body>
-  <script>let logo;var animate=!1,startcount=0,r=0,lastTyped=0,textTyped="";function preload(){logo=loadModel("assets/logo.stl",!0)}function setup(){createCanvas(300,200,WEBGL)}function keyTyped(){Date.now()-lastTyped>1e3&&(textTyped=""),textTyped+=key,lastTyped=Date.now(),(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]==textTyped&&rot()}function draw(){clear(),renderLogo()}function rot(){startcount=frameCount,animate=!0,r=0}function renderLogo(){1==animate&&(r<PI?r=.01*(frameCount-startcount):(animate=!1,window.location="secret.html?c="+Date.now())),rotateX(r+PI),rotateY(r),scale(.8),null!=stylet&&ambientLight(stylet.split("=")[1]),ambientMaterial(255),noStroke(),model(logo)}  </script>
   <script src="common.js" type="text/javascript"></script>
 </html>
