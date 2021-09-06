@@ -2,7 +2,7 @@
 <html lang='en' dir='ltr'>
   <head>
     <meta charset='utf-8'>
-    <title>mandelbrot explorer</title>
+    <title>fractal explorer</title>
     <style>
       :root {
         --a: #f90;
@@ -20,13 +20,19 @@
     <canvas style='border: 1px solid black;display:none' id='big' width='1000' height='600'>sorry, your browser doesn't support js canvas</canvas>
       <button onclick='draw()'>re-draw</button>
       <button onclick='changecanvas()' id='changeCanvas'>big canvas</button>
-      <button onclick='copyText(window.location.origin+"/subpages/fractal.html?xoff="+xoff+"&yoff="+yoff+"&zoom="+zoom+(document.getElementById("customit").checked?"&maxit="+maxit:""+document.getElementById("big").style.display == "none"?"":"&canv=big"))'>copy share link</button>
+      <button onclick='copyText(window.location.origin+"/subpages/fractal.html?xoff="+xoff+"&yoff="+yoff+"&zoom="+zoom+(document.getElementById("customit").checked?"&maxit="+maxit:""+(document.getElementById("big").style.display == "none"?"":"&canv=big")+(customFractal?"&frac="+customFractal:"")))'>copy share link</button>
       <div class="group">
         <input onchange='document.getElementById("itlabel").innerHTML = Math.pow(document.getElementById("itsl").value,2); maxit = Math.pow(document.getElementById("itsl").value,2);' type='range' id='itsl' name='itsl' value='8' min='1' max='150'>
         <label for='itsl' id='itlabel'>64</label>
         <input type='checkbox' checked="true" id='customit' name="customit" onclick='customit = document.getElementById("customit").checked'>
         <label for='customit'>manually set iterations of algorithm</label>
       </div>
+      <select id="fractalID" onchange="setFractal()">
+        <option value="0" selected>mandelbrot</option>
+        <option value="1">burning ship</option>
+        <option value="2">julia set (0.1+0.62i)</option>
+        <option value="3">custom</option>
+      </select><br>
       keybinds<br>
       <br>
       click/Z   zoom in 1.5x<br>
@@ -43,7 +49,7 @@
     var zoom = 1;
     var maxit = 64;
     var customit = false;
-    var customFractal = true;
+    var customFractal = 0;
     if(urlParams.get('xoff')!=null){
       xoff=parseFloat(urlParams.get('xoff'))
     }
@@ -52,6 +58,10 @@
     }
     if(urlParams.get('zoom')!=null){
       zoom=parseFloat(urlParams.get('zoom'))
+    }
+    if(urlParams.get('frac')!=null){
+      customFractal=parseFloat(urlParams.get('frac'))
+      document.getElementById('fractalID').value = urlParams.get('frac')
     }
     if(urlParams.get('maxit')!=null){
       maxit=parseInt(urlParams.get('maxit'))
@@ -73,6 +83,7 @@
     var imgd = ctx.getImageData(0,0,canvas.width, canvas.height);
     var pixels = imgd.data;
     function setup(){
+      setFractal(false)
       ctx.fillStyle = '#057';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       draw()
@@ -85,16 +96,7 @@
         for (let i = h; i < pixels.length; i += 64) {
           let x = i/4%canvas.width
           let y = Math.floor(i/4/canvas.width)
-          let it;
-          if (customFractal == 0){
-            it = mdb((xoff+(x-canvas.width/2)/zoom)/canvas.height/0.4,(yoff+(y-canvas.height/2)/zoom)/canvas.height/0.4);
-          } else if (customFractal == 1) {
-            it = ship((xoff+(x-canvas.width/2)/zoom)/canvas.height/0.4,(yoff+(y-canvas.height/2)/zoom)/canvas.height/0.4)
-          } else if (customFractal == 2) {
-            it = julia((xoff+(x-canvas.width/2)/zoom)/canvas.height/0.4,(yoff+(y-canvas.height/2)/zoom)/canvas.height/0.4)
-          } else if (customFractal == 3) {
-            it = custom((xoff+(x-canvas.width/2)/zoom)/canvas.height/0.4,(yoff+(y-canvas.height/2)/zoom)/canvas.height/0.4)
-          }
+          let it = fractal((xoff+(x-canvas.width/2)/zoom)/canvas.height/0.4,(yoff+(y-canvas.height/2)/zoom)/canvas.height/0.4);
           if (it == maxit){
            pixels[i]     = 0
            pixels[i + 1] = 50;
@@ -110,42 +112,34 @@
         await sleep(0)
       }
     }
-    function mdb(x,y){
-      let zx = 0
-      let zy = 0
-      let j = 0
-      while(j < maxit && Math.sqrt(zx*zx+zy*zy) < 2){
-            let tempzx = zx*zx - zy*zy + x
-            zy = 2*zx*zy + y
-            zx = tempzx
-            j ++
-      }
-      return j
+    var fractal = ()=>{
     }
-    function julia(x,y){
-      let zx = x
-      let zy = y
-      let j = 0
-      while(j < maxit && Math.sqrt(zx*zx+zy*zy) < 2){
-            let tempzx = zx*zx - zy*zy + 0.1
-            zy = 2*zx*zy + 0.62
-            zx = tempzx
-            j ++
+    function setFractal(update=true){
+      if (update) customFractal = parseInt(document.getElementById('fractalID').value);
+      if (customFractal == 0){
+        fractal = (x,y)=>{
+          let zx=0,zy=0,j=0;for(;j<maxit&&Math.sqrt(zx*zx+zy*zy)<2;){let z=zx*zx-zy*zy+x;zy=2*zx*zy+y,zx=z,j++}
+          return j
+        }
+      } else if (customFractal == 1){
+        fractal = (x,y)=>{
+          let zx=x,zy=y,j=0;for(;j<maxit&&Math.sqrt(zx*zx+zy*zy)<2;){let z=Math.abs(zx*zx)-Math.abs(zy*zy)+x;zy=2*Math.abs(zx*zy)+y,zx=z,j++}
+          return j
+        }
+      } else if (customFractal == 2){
+        fractal = (x,y)=>{
+          let zx=x,zy=y,j=0;for(;j<maxit&&Math.sqrt(zx*zx+zy*zy)<2;){let z=zx*zx-zy*zy+.1;zy=2*zx*zy+.62,zx=z,j++}
+          return j
+        }
       }
-      return j
-    }
-    function ship(x,y){
-      let zx = x
-      let zy = y
-      let j = 0
-      while(j < maxit && Math.sqrt(zx*zx+zy*zy) < 2){
-            let tempzx = Math.abs(zx*zx) - Math.abs(zy*zy) + x
-            zy = 2*Math.abs(zx*zy) + y
-            zx = tempzx
-            j ++
+      if (update){
+        xoff = 0
+        yoff = 0
+        zoom = 1
+        draw()
       }
-      return j
     }
+
     function getCursorPosition(canvas, event) {
       const rect = canvas.getBoundingClientRect()
       const x = event.clientX - rect.left
