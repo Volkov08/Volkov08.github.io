@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Sitzplaner</title>
+    <style>
+      :root {
+        --a: #f90;
+        --m: #fff;
+        --t: #000;
+        --t2: #fff;
+      }
+    </style>
+    <link href="/style.css" rel="stylesheet">
+  </head>
+  <body style="margin: 1rem" onload="draw()">
+    <div id="back" onclick="window.location='/'">❰❰</div>
+    <div class="group">
+    <button onclick="tables.push(new table(Math.floor(Math.random()*25),Math.floor(Math.random()*25),160,140,1));draw()">Tisch klein</button>
+    <button onclick="tables.push(new table(Math.floor(Math.random()*25)+80,Math.floor(Math.random()*25),240,140,2));draw()">Tisch groß</button>
+    </div>
+    <br>
+    <canvas id="main" width="1600" height="1600">your browser is too lame for canvas</canvas>
+    <br>
+    <textarea id="pupilsInp" cols="30" rows="5" placeholder="Max Mustermann (Lat,Fr1)&#10;Ben Birke (Lat )"></textarea>
+    <textarea id="groupsInp" cols="20" rows="5" placeholder="Lat 1000&#10;Fr1 100"></textarea>
+    <br>
+    <div class="group">
+      <button onclick="start()">Berechnung starten</button>
+      <button onclick="stop()">Berechnung beenden</button>
+      <button onclick="prepareDownload()">Download</button>
+    </div>
+    <a id='planDown' style="display: none" href="" class="down" download>⤓</a>
+  </body>
+  <script type="text/javascript">
+    var canvas = document.getElementById('main');
+    var ctx = canvas.getContext('2d');
+    var tables = []
+    var pupils = []
+    var groups = {}
+    let mouseX = 0
+    let mouseY = 0
+    let mouseDown = false
+    let dragcoord;
+    let dragging = false
+    let currentValue = 0
+    let interval = -1
+
+    class seat {
+      constructor(x,y){
+        this.x = x
+        this.y = y
+        this.p;
+      }
+      draw(){
+        ctx.strokeStyle = '#f00';
+        ctx.beginPath();
+        ctx.rect(this.x-5, this.y-5, 10, 10);
+        ctx.stroke();
+        if (this.p){
+          ctx.fillStyle = '#0ff';
+          ctx.font = `12px sans-serif`;
+          ctx.fillText(this.p.name, this.x-(this.p.name.length*3), this.y+30)
+        }
+      }
+    }
+    class table {
+      constructor(x,y,w,h,n){
+        this.x = x
+        this.y = y
+        this.w = w
+        this.h = h
+        this.dragged = false
+        this.seats = []
+        for(let i = 0; i < n; i ++){
+          let myseat = new seat(x+(i+1)*(w/(n+1)),y+h/2)
+          //console.log(myseat)
+          this.seats.push(myseat)
+        }
+      }
+      draw(){
+        if (this.dragged){
+          let newX = mouseX - dragcoords.x
+          let newY = mouseY - dragcoords.y
+          newX = (newX > 0)?((newX+this.w+2)<canvas.width?newX:canvas.width-this.w-2):2
+          newY = (newY > 0)?((newY+this.h+2)<canvas.height?newY:canvas.height-this.h-2):2
+          for (const s of this.seats){
+            s.x += newX - this.x
+            s.y += newY - this.y
+          }
+          this.x = newX
+          this.y = newY
+        }
+        if (mouseX>=this.x&&mouseY>=this.y&&mouseX<=this.x+this.w&&mouseY<=this.y+this.h){
+          if (canvas.width-30>=this.x&&30>=this.y&&canvas.width-30<=this.x+this.w&&30<=this.y+this.h){
+            ctx.strokeStyle = '#f00';
+          } else {
+            ctx.strokeStyle = '#af0';
+          }
+        } else {
+          ctx.strokeStyle = '#ff0';
+        }
+        ctx.beginPath();
+        ctx.rect(this.x, this.y, this.w, this.h);
+        ctx.stroke();
+        for (const s of this.seats){
+          s.draw()
+        }
+      }
+      colliding(x=mouseX,y=mouseY){
+        if (x>=this.x&&y>=this.y&&x<=this.x+this.w&&y<=this.y+this.h){
+          return {x:x-this.x,y:y-this.y}
+        }
+        return false
+      }
+    }
+
+    function start(){
+      pupils = parsePupils()
+      groups = parseGroups()
+      randomize()
+      interval = window.setInterval(tick,50)
+      window.clearInterval(tick,50)
+    }
+    function stop(){
+      window.clearInterval(tick,50)
+    }
+
+    function parsePupils(){
+      let newArr = []
+      for (const line of document.getElementById('pupilsInp').value.split('\n')){
+        if (line.match(/^.*\s\(.*\)/)){
+          let sub = line.match(/\(.*\)/)[0]
+          sub = sub.substr(1,sub.length-2)
+          newArr.push({
+            name: line.substr(0,line.match(/\s\(/).index),
+            groups: sub.length?sub.split(','):[]
+          })
+        }
+      }
+      return newArr
+    }
+
+    function prepareDownload(){
+      draw()
+      document.getElementById('planDown').style.display = 'block'
+      let img = document.createElement('image')
+      img.src = canvas.toDataURL("image/png",1)
+      document.getElementById('planDown').href = img.src
+    }
+
+    function parseGroups(){
+      let newArr = []
+      for (const line of document.getElementById('groupsInp').value.split('\n')){
+        if (line.match(/^.*\s[-0-9]+/)){
+          let sub = line.match(/^.*\s/)[0]
+          sub = sub.substr(0,sub.length-1)
+          newArr[sub] = {value: parseInt(line.match(/\s[-0-9]+/)[0])}
+        }
+      }
+      return newArr
+    }
+
+    function getCursorPosition(event) {
+      const rect = canvas.getBoundingClientRect()
+      mouseX = event.clientX - rect.left
+      mouseY = event.clientY - rect.top
+      draw()
+    }
+    canvas.addEventListener('mousemove', function(e) {
+      getCursorPosition(e)
+    })
+    canvas.addEventListener('mousedown', function(e) {
+      mouseDown = true
+    })
+    canvas.addEventListener('mouseup', function(e) {
+      mouseDown = false
+    })
+    function draw(){
+      ctx.fillStyle = '#013';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = '#f00';
+      ctx.beginPath();
+      ctx.moveTo(canvas.width-40, 40)
+      ctx.lineTo(canvas.width-80, 80)
+      ctx.moveTo(canvas.width-40, 80)
+      ctx.lineTo(canvas.width-80, 40)
+      ctx.stroke();
+      for (let t of tables){
+        t.draw()
+        if (mouseDown && t.colliding()){
+          if (!dragging){
+            t.dragged = true
+            dragcoords = t.colliding()
+            dragging = true
+          }
+        } else {
+          if (t.dragged){
+            t.dragged = false
+            if (t.colliding(canvas.width-60,60)){
+              tables.splice(tables.indexOf(t),1)
+            }
+          }
+          if (dragging && !mouseDown){
+            dragging = false
+          }
+        }
+      }
+    }
+    function swap(a,b){
+      let temp = a.p
+      a.p = b.p
+      b.p = temp
+    }
+    function tick(){
+      //making new arrangment
+      let total = 0
+      for (t of tables){
+        for (s of t.seats){
+          total ++
+        }
+      }
+      let a = Math.floor(Math.random()*total)
+      let b = Math.floor(Math.random()*total)
+      let i = 0
+      let ela,elb;
+      for (t of tables){for (s of t.seats){
+          if (i == a){
+            ela = s
+          }
+          if (i == b){
+            elb = s
+          }
+          i ++
+      }}
+      swap(ela,elb)
+      draw()
+      //console.log(ela.p,elb.p)
+      //testing if better
+      let newValue = calculateValue(tables)
+      //console.log(currentValue,newValue)
+      if (newValue > currentValue || Math.random > 0.9){
+        currentValue = newValue
+      } else {
+        swap(ela,elb)
+      }
+
+      draw()
+    }
+    //window.setInterval(tick,500)
+    function calculateValue(arr){
+      let sum = 0
+      for (t of arr){for (s of t.seats){
+        if (s.p){
+          for (v of arr){for (u of v.seats){
+            if (u.p && s != u){
+              let dist = Math.sqrt((s.x-u.x)**2 + (s.y-u.y)**2)
+              for (g of s.p.groups){
+                if (u.p.groups.includes(g) && groups[g]){
+                  //console.log(g,groups[g],groups[g].value/dist)
+                  sum += groups[g].value/dist
+                }
+              }
+              sum += dist/1000
+            }
+          }}
+        }
+      }}
+      return sum
+    }
+
+    function randomize(){
+      let copy = [...pupils]
+      for (t of tables){
+        for (s of t.seats){
+          if (copy.length){
+            //console.log(copy)
+            s.p = copy.splice(Math.floor(Math.random()*copy.length),1)[0]
+          } else {
+            s.p = undefined
+          }
+        }
+      }
+      draw()
+      currentValue = calculateValue(tables)
+    }
+  </script>
+  <script src="/common.js" type="text/javascript"></script>
+</html>
