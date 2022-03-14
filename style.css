@@ -31,23 +31,21 @@ h1,main {
 .nav ul {
   list-style-type: none;
   text-align: center;
-  margin: 0;
-  padding: 0;
   height: 60px;
-  padding: 10px;
+  margin: 0;
+  padding: 0 0 10px 0;
   transition: height 0.5s;
   border-top: 2px solid var(--t2);
 }
 .nav ul li {
-  opacity: 0;
   transition: opacity 0.5s;
   margin-top: 15px;
   padding: 0;
+  display: none;
+  background: var(--a);
 }
 .nav ul:hover li {
   display: block;
-  opacity: 1;
-  transition: opacity 0.5s
 }
 .nav ul:hover {
   height: 50vh;
