@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang='en' dir='ltr'>
+  <head>
+    <meta charset='utf-8'>
+    <title>RGB splitter</title>
+    <style>
+      :root {
+        --a: #f90;
+        --m: #fff;
+        --t: #000;
+        --t2: #fff;
+      }
+    </style>
+    <link href="/style.css" rel="stylesheet">
+    <script src="/common.js" type="text/javascript"></script>
+  </head>
+  <body style="margin: 2rem">
+    <div id="back" onclick="window.location='/'">❰❰</div>
+    <input type="file" id ="imgInp">
+    <br>
+    <p id="imgDesc"></p>
+    <br>
+    <image id="original">
+    <image id="Rimg">
+    <image id="Gimg">
+    <image id="Bimg">
+    <canvas id='originalCanv' style="display:none"></canvas>
+    <canvas id='Rcanv' style="display:none"></canvas>
+    <canvas id='Gcanv' style="display:none"></canvas>
+    <canvas id='Bcanv' style="display:none"></canvas>
+
+    <a id="Rdown" class="down" download="Rsplit" style="display:none">⤓</button>
+    <a id="Gdown" class="down" download="Gsplit" style="display:none">⤓</button>
+    <a id="Bdown" class="down" download="Bsplit" style="display:none">⤓</button>
+
+  </body>
+  <script>
+    var imgw = 500;
+    originalCtx = originalCanv.getContext('2d')
+    Rctx = Rcanv.getContext('2d')
+    Gctx = Gcanv.getContext('2d')
+    Bctx = Bcanv.getContext('2d')
+
+    imgInp.onchange = evt => {
+      imgw = window.innerWidth * .65
+
+      const [file] = imgInp.files
+
+      for (OutImg of [original,Rimg,Gimg,Bimg]){
+        OutImg.style.display = 'none';
+      }
+
+      if (file) {
+        original.src = URL.createObjectURL(file)
+      }
+      original.onload = () => {
+        original.removeAttribute("width")
+        for (canv of [originalCanv,Rcanv,Gcanv,Bcanv]){
+          canv.width = original.width
+          canv.height = original.height
+        }
+        originalCtx.drawImage(original,0,0)
+        imgDesc.innerHTML = original.width + "x" + original.height + " px"
+
+        let originalDat = originalCtx.getImageData(0,0,originalCanv.width,originalCanv.height);
+        let Rdat = Rctx.createImageData(originalDat)
+        let Gdat = Rctx.createImageData(originalDat)
+        let Bdat = Rctx.createImageData(originalDat)
+
+        for (let i = 0; i < originalDat.data.length; i += 4){
+          Rdat.data[i] = originalDat.data[i]
+          Gdat.data[i+1] = originalDat.data[i+1]
+          Bdat.data[i+2] = originalDat.data[i+2]
+
+          Rdat.data[i+3] = 255
+          Gdat.data[i+3] = 255
+          Bdat.data[i+3] = 255
+        }
+
+        Rctx.putImageData(Rdat,0,0)
+        Gctx.putImageData(Gdat,0,0)
+        Bctx.putImageData(Bdat,0,0)
+
+        Rimg.src = Rcanv.toDataURL("image/png",1)
+        Gimg.src = Gcanv.toDataURL("image/png",1)
+        Bimg.src = Bcanv.toDataURL("image/png",1)
+        Rdown.href = Rimg.src
+        Gdown.href = Gimg.src
+        Bdown.href = Bimg.src
+        for (OutImg of [original,Rimg,Gimg,Bimg]){
+          OutImg.width = imgw;
+          OutImg.style.display = 'block';
+        }
+        for (link of [Rdown,Gdown,Bdown]){
+          link.style.display = 'block'
+        }
+      }
+    }
+  </script>
+</html>

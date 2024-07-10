@@ -1,0 +1,24 @@
+{
+"projects":[
+    {
+        "name":"Radioisotope\nMod",
+        "url":"https://github.com/Volkov08/mc_radioisotopes",
+        "img":"https://cdn.modrinth.com/data/gHr5rPVT/bd410cf1d35c2eab4e4b9523950ef7410f7d52a9.png"
+    },
+    {
+        "name":"Multi-Client\nBot",
+        "url":"https://github.com/Volkov08/Vadim",
+        "img":"res/discord-logo.jpg"
+    },
+    {
+        "name":"Fractal\nExplorer",
+        "url":"subpages/fractal.html",
+        "img":"res/fractal.png"
+    },
+    {
+        "name":"555\nCalculator",
+        "url":"subpages/555backwards.html",
+        "img":"res/555alt.svg"
+    }
+] 
+}

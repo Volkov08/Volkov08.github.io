@@ -1,0 +1,90 @@
+body {
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto; 
+    background: rgb(8,0,68);
+    background: linear-gradient(160deg,
+        rgb(0, 0, 53) 0%,
+        rgb(8, 0, 68) 55%,
+        rgb(39, 0, 94) 100%
+    ) fixed; 
+    margin: 0;
+    color: rgb(255, 255, 255);
+}
+
+h1 {
+    font-size: 8vw;
+    text-align: center;
+    color: rgb(255, 255, 255);
+}
+ul {
+    list-style: none;
+}
+
+#projects {
+    margin-top: 6vw;
+    width: 86vw;
+    padding: 2vw;
+    margin-left: 5vw;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#projects div {
+    width: calc(86vw/4 - 0.6vw);
+    height: calc(86vw/4 - 0.6vw);
+    background-size: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    background-blend-mode: multiply;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 0.3vw;
+}
+
+#projects div h1 {
+    width: 92%;
+    word-break: break-all;
+    margin: 3%;
+    padding: 1%;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    font-size: 3vw;
+    margin-bottom: 0;
+    margin-top: 0.3em;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 0.5em;
+}
+#footer {
+    margin-top: 6vw;
+    width: 74vw;
+    padding: 3vw;
+    margin-left: 10vw;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    height: 50vw;
+}
+#footer div {
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 15px 0 0 15px;
+    height: 100%;
+    width: 36.7vw;
+    float: left;
+}
+#footer div:nth-child(2){
+    float: right;
+    border-radius: 0 15px 15px 0;
+}
+#footer h1 {
+    font-size: 4vw;
+    margin-top: 1vw;
+    padding-right: 6vw;
+    text-align: center;
+    width: 100%;
+    opacity: 0.5;
+    transition-duration: 0.1s;
+}
+#footer div:hover h1 {
+    opacity: 1;
+    transition-duration: 0.3s;
+}

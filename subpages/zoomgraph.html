@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      :root {
+        --a: #f90;
+        --m: #fff;
+        --t: #000;
+        --t2: #fff;
+      }
+    </style>
+    <link href="/style.css" rel="stylesheet">
+    <title>zoom graph</title>
+    <script src="/common.js" type="text/javascript"></script>
+    <meta charset="utf-8">
+  </head>
+  <body style="margin: 6rem">
+    <div id="back" onclick="window.location='/'">❰❰</div>
+    <h1>zoom grapher</h1>
+    <br><br>
+    <video src="/resources/test2.mp4" autoplay loop muted style="max-height: 30rem; max-width: 90%"></video><br>
+    <br>
+    execute with nodejs.
+    This automatically draws an image using the zoom comment tool when in screenshare. Remember to resize the image to appropriate size because every pixel line will correspond in a line drawn by the bot!
+    required packages:
+    <ul class="pkglist">
+    <li>robotjs</li>
+    <li>image-js</li>
+    </ul>
+    <ul>
+    <li>
+      <h3>zoomgraph.js <a href="/resources/zoomgraph.js" class="down" download>⤓</a></h3>
+      <p>
+        usage:<br>
+        node zoomgraph.js [image file]<br>
+        -w  draws white last, usually recommended<br>
+        -v  displays debug info<br>
+        -s #  defines the line width as #, 2 is default (zoom line widths: 1, 2, 4, 6)<br>
+        -d #  sets the delay after releasing/pressing the mouse as #ms, default is 5ms (increase when lines are not drawn or at the wrong place)<br>
+        -h  show this dialog<br>
+        <br>
+        example: node zoomraph.js bob.png -w -s 1<br>
+        <br>
+        after the program starts it will prompt you to first put your mouse on the button that will change the color, put it as close to the centre as you can. then put your mouse where you want the top left corner to be. as a failsafe you can quickly swipe your mouse to the right to abort
+      </p>
+    </li>
+    </ul>
+  </body>
+</html>
