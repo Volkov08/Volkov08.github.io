@@ -9,15 +9,31 @@ body {
     ) fixed; 
     margin: 0;
     color: rgb(255, 255, 255);
+    --flexnum: 4;
+    --size: 1vw;
 }
 
 h1 {
-    font-size: 8vw;
+    font-size: calc(8*var(--size));
     text-align: center;
     color: rgb(255, 255, 255);
 }
 ul {
     list-style: none;
+}
+
+#main-heading span {
+  background: -webkit-linear-gradient(0deg, rgb(0, 89, 255), rgb(153, 0, 255));
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: bgrscroll 2s ease infinite;
+}
+
+@keyframes bgrscroll {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
 }
 
 #projects {
@@ -32,14 +48,28 @@ ul {
 }
 
 #projects div {
-    width: calc(86vw/4 - 0.6vw);
-    height: calc(86vw/4 - 0.6vw);
+    width: calc(86vw/var(--flexnum) - 0.6vw);
+    height: calc(86vw/var(--flexnum) - 0.6vw);
     background-size: 100%;
     background-color: rgba(0, 0, 0, 0.3);
     background-blend-mode: multiply;
     background-repeat: no-repeat;
     background-position: center;
+
+    border-radius: 8px;
+
     margin: 0.3vw;
+
+    z-index: 1;
+
+    scale: 1;
+    transition: scale 0.2s;
+}
+
+#projects div:hover {
+    z-index: 9999;
+    scale: 1.05;
+    transition: scale 0.2s;
 }
 
 #projects div h1 {
@@ -49,42 +79,66 @@ ul {
     padding: 1%;
     text-align: center;
     color: rgb(255, 255, 255);
-    font-size: 3vw;
+    font-size: calc(3*var(--size));
     margin-bottom: 0;
     margin-top: 0.3em;
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 0.5em;
 }
+
+
+div:has(#footer) {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
 #footer {
     margin-top: 6vw;
-    width: 74vw;
+    width: calc(110*var(--size) + 0.6vw);
     padding: 3vw;
-    margin-left: 10vw;
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 15px;
-    height: 50vw;
+    height: fit-content;
 }
+
 #footer div {
     background-color: rgba(0, 0, 0, 0.6);
-    border-radius: 15px 0 0 15px;
-    height: 100%;
-    width: 36.7vw;
-    float: left;
-}
-#footer div:nth-child(2){
-    float: right;
     border-radius: 0 15px 15px 0;
+    height: 20vw;
+    width: calc(40*var(--size));
+    float: right;
+}
+#footer div:first-child{
+    width: calc(70*var(--size));
+    float: left;
+    border-radius: 15px 0 0 15px;
 }
 #footer h1 {
-    font-size: 4vw;
+    font-size: calc(4*var(--size));
     margin-top: 1vw;
     padding-right: 6vw;
     text-align: center;
     width: 100%;
     opacity: 0.5;
-    transition-duration: 0.1s;
+    transition: opacity 0.1s;
 }
 #footer div:hover h1 {
     opacity: 1;
-    transition-duration: 0.3s;
+    transition: opacity 0.3s;
+}
+
+.mobile #footer {
+    display: block;
+    justify-content: center;
+    margin: 3vw;
+}
+.mobile #footer div:first-child {
+    height: 30vw;
+    margin-bottom: 0.6vw;
+    border-radius: 15px 15px 0 0;
+}
+.mobile #footer div{
+    width: 100%;
+    border-radius: 0 0 15px 15px;
 }
